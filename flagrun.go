@@ -52,20 +52,29 @@ func ArgsRequired() FlagrunOptions {
 	}
 }
 
+func println(w io.Writer, s string) error {
+	if len(s) == 0 || s[len(s)-1] != '\n' {
+		_, err := fmt.Fprint(w, s+"\n")
+		return err
+	}
+	_, err := fmt.Fprint(w, s)
+	return err
+}
+
 func Go(opt Runner, options ...FlagrunOptions) int {
 	msg, code := internalGo(os.Args[1:], os.Stdout, os.Stderr, opt, options...)
 	if msg != "" {
 		if code == OK {
-			fmt.Println(msg)
+			_ = println(os.Stdout, msg)
 		} else {
-			fmt.Fprintln(os.Stderr, msg)
+			_ = println(os.Stderr, msg)
 		}
 	}
 	return code
 }
 
-// if the struct has Version field and the type is bool and the bool is true
-func hasVersionField(opt Runner) bool {
+// hasBooleanVersionField checks if the struct has a Version field of type bool and its value is true
+func hasBooleanVersionField(opt Runner) bool {
 	t := reflect.TypeOf(opt)
 	if t.Kind() == reflect.Pointer {
 		t = t.Elem()
@@ -102,7 +111,7 @@ func internalGo(
 	}
 	args, err := psr.ParseArgs(argv)
 	// opt has a Version field, print version and exit
-	if hasVersionField(opt) {
+	if hasBooleanVersionField(opt) {
 		fmt.Fprintf(
 			stdout,
 			"%s-%s\n%s/%s, %s, %s\n",
