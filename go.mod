@@ -1,4 +1,4 @@
-module github.com/monigoring-forge/flagrun
+module github.com/monitoring-forge/flagrun
 
 go 1.26.4
 
