@@ -21,29 +21,31 @@ go get github.com/monigoring-forge/flagrun
 
 `Runner` インターフェースを実装した構造体を `flagrun.Go` に渡します。
 
+`Run` メソッドの戻り値は `(メッセージ, 終了コード)` です。終了コードが `OK` の場合、メッセージは標準出力へ出力されます。`OK` 以外の場合は標準エラー出力へ出力されます。終了コードは `os.Exit` に渡されます。
+
 ```go
 package main
 
 import (
-    "github.com/jessevdk/go-flags"
+    _ "github.com/jessevdk/go-flags"
     "github.com/monigoring-forge/flagrun"
 )
 
-type MyPlugin struct {
+type Opt struct {
     Host string `short:"H" long:"host" default:"localhost" description:"Target host"`
     Port int    `short:"p" long:"port" default:"8080" description:"Target port"`
     Version bool `short:"v" long:"version" description:"Show version"`
 }
 
-func (p *MyPlugin) Run(args []string) (string, int) {
+func (p *Opt) Run(args []string) (string, int) {
     // Mackerel plugin のメイン処理を実装
     return "ok\t1", flagrun.OK
 }
 
 func main() {
-    plugin := &MyPlugin{}
+    opt := &Opt{}
     os.Exit(flagrun.Go(
-        plugin,
+        opt,
         flagrun.Version(version),
         flagrun.Commit(commit),
     ))
