@@ -12,5 +12,5 @@ require (
 
 require (
 	github.com/stretchr/testify v1.11.1
-	golang.org/x/sys v0.21.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
 )
