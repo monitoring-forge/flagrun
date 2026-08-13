@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.2](https://github.com/monitoring-forge/flagrun/compare/v0.0.1...v0.0.2) - 2026-08-13
+
+- fix: correct typo in module name from 'monigoring' to 'monitoring' by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/4
+
 ## [v0.0.1](https://github.com/monitoring-forge/flagrun/commits/v0.0.1) - 2026-08-13
 
 - 1st commit by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/1
