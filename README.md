@@ -14,7 +14,7 @@ monitoring-forgeのMackerel pluginで広く利用している [go-flags](https:/
 ## インストール
 
 ```bash
-go get github.com/monigoring-forge/flagrun
+go get github.com/monitoring-forge/flagrun
 ```
 
 ## 使い方
@@ -28,7 +28,7 @@ package main
 
 import (
     _ "github.com/jessevdk/go-flags"
-    "github.com/monigoring-forge/flagrun"
+    "github.com/monitoring-forge/flagrun"
 )
 
 type Opt struct {
