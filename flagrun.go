@@ -55,7 +55,11 @@ func ArgsRequired() FlagrunOptions {
 func Go(opt Runner, options ...FlagrunOptions) int {
 	msg, code := internalGo(os.Args[1:], os.Stdout, os.Stderr, opt, options...)
 	if msg != "" {
-		fmt.Println(msg)
+		if code == OK {
+			fmt.Println(msg)
+		} else {
+			fmt.Fprintln(os.Stderr, msg)
+		}
 	}
 	return code
 }

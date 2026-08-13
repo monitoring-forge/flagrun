@@ -98,3 +98,26 @@ func TestInternalGo(t *testing.T) {
 		})
 	}
 }
+
+type requiredRunner struct {
+	Version  bool   `short:"v" long:"version" description:"Show version"`
+	Required string `short:"r" long:"required" description:"Required parameter" required:"true"`
+}
+
+func (r *requiredRunner) Run(_ []string) (string, int) {
+	return "Test runner executed", OK
+}
+
+func TestInternalGoWithRequiredParameters(t *testing.T) {
+	o := &requiredRunner{}
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	msg, code := internalGo([]string{}, &stdout, &stderr, o)
+	stdoutStr := stdout.String()
+	stderrStr := stderr.String()
+
+	assert.Equal(t, "", msg)
+	assert.Contains(t, stdoutStr, "")
+	assert.Contains(t, stderrStr, "the required flag `-r, --required")
+	assert.Equal(t, UNKNOWN, code)
+}
