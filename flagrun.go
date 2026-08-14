@@ -114,7 +114,7 @@ func hasBooleanVersionField(opt Runner) bool {
 }
 
 func buildCommitHash() string {
-	commit := "0000000"
+	commit := "dev"
 	dirty := false
 	if info, ok := debug.ReadBuildInfo(); ok {
 		for _, setting := range info.Settings {
