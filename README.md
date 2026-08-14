@@ -61,6 +61,7 @@ func main() {
 | `flagrun.Version(version string)` | バージョン表示に使用する文字列を指定します。 |
 | `flagrun.Commit(commit string)` | コミットハッシュなどを指定します（デフォルト: `dev`）。 |
 | `flagrun.ArgsRequired()` | コマンドライン引数を必須にします。引数がない場合は UNKNOWN で終了します。 |
+| `flagrun.AlwaysStdout()` | `Run` の戻り値を、終了コードに関係なく標準出力へ出力します。 |
 
 ## 終了コード
 
