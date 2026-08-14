@@ -52,12 +52,14 @@ func ArgsRequired() FlagrunOptions {
 	}
 }
 
-func println(w io.Writer, s string) error {
-	if len(s) == 0 || s[len(s)-1] != '\n' {
-		_, err := fmt.Fprint(w, s+"\n")
-		return err
+func printLine(w io.Writer, s string) error {
+	if w == nil {
+		return nil
 	}
-	_, err := fmt.Fprint(w, s)
+	if !strings.HasSuffix(s, "\n") {
+		s += "\n"
+	}
+	_, err := io.WriteString(w, s)
 	return err
 }
 
