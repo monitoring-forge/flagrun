@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.4](https://github.com/monitoring-forge/flagrun/compare/v0.0.3...v0.0.4) - 2026-08-14
+
+- Feat/fix go mod version by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/8
+
 ## [v0.0.3](https://github.com/monitoring-forge/flagrun/compare/v0.0.2...v0.0.3) - 2026-08-14
 
 - Feat/display msg and pr agent model by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/6
