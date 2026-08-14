@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.3](https://github.com/monitoring-forge/flagrun/compare/v0.0.2...v0.0.3) - 2026-08-14
+
+- Feat/display msg and pr agent model by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/6
+
 ## [v0.0.2](https://github.com/monitoring-forge/flagrun/compare/v0.0.1...v0.0.2) - 2026-08-13
 
 - fix: correct typo in module name from 'monigoring' to 'monitoring' by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/4
