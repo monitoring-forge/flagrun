@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type testRunner struct {
@@ -84,10 +85,10 @@ func TestInternalGo(t *testing.T) {
 			}
 			var stdout bytes.Buffer
 			var stderr bytes.Buffer
-			msg, code := internalGo(tt.args, &stdout, &stderr, o, options...)
+			f, msg, code := internalGo(tt.args, &stdout, &stderr, o, options...)
 			stdoutStr := stdout.String()
 			stderrStr := stderr.String()
-
+			require.NotNil(t, f, "%s Flagrun instance should not be nil", tt.name)
 			assert.Equal(t, tt.wantMsg, msg, "%s msg", tt.name)
 			assert.Contains(t, stdoutStr, tt.wantStdout, "%s stdout", tt.name)
 			assert.Contains(t, stderrStr, tt.wantStderr, "%s stderr", tt.name)
@@ -112,10 +113,11 @@ func TestInternalGoWithRequiredParameters(t *testing.T) {
 	o := &requiredRunner{}
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
-	msg, code := internalGo([]string{}, &stdout, &stderr, o)
+	f, msg, code := internalGo([]string{}, &stdout, &stderr, o)
 	stdoutStr := stdout.String()
 	stderrStr := stderr.String()
 
+	assert.NotNil(t, f, "Flagrun instance should not be nil")
 	assert.Equal(t, "", msg)
 	assert.Contains(t, stdoutStr, "")
 	assert.Contains(t, stderrStr, "the required flag `-r, --required")

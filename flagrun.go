@@ -6,6 +6,7 @@ import (
 	"os"
 	"reflect"
 	"runtime"
+	"runtime/debug"
 	"strings"
 
 	"github.com/jessevdk/go-flags"
@@ -27,6 +28,7 @@ type Flagrun struct {
 	ArgsRequired bool
 	Version      string
 	Commit       string
+	AlwaysStdout bool
 }
 
 type FlagrunOptions func(*Flagrun)
@@ -53,6 +55,12 @@ func ArgsRequired() FlagrunOptions {
 	}
 }
 
+func AlwaysStdout() FlagrunOptions {
+	return func(f *Flagrun) {
+		f.AlwaysStdout = true
+	}
+}
+
 func printLine(w io.Writer, s string) error {
 	if w == nil {
 		return nil
@@ -65,9 +73,9 @@ func printLine(w io.Writer, s string) error {
 }
 
 func Go(opt Runner, options ...FlagrunOptions) int {
-	msg, code := internalGo(os.Args[1:], os.Stdout, os.Stderr, opt, options...)
+	f, msg, code := internalGo(os.Args[1:], os.Stdout, os.Stderr, opt, options...)
 	if msg != "" {
-		if code == OK {
+		if code == OK || f.AlwaysStdout {
 			_ = printLine(os.Stdout, msg)
 		} else {
 			_ = printLine(os.Stderr, msg)
@@ -105,15 +113,37 @@ func hasBooleanVersionField(opt Runner) bool {
 	return ok && field.Type.Kind() == reflect.Bool && v.FieldByName("Version").Bool()
 }
 
+func buildCommitHash() string {
+	commit := "0000000"
+	dirty := false
+	if info, ok := debug.ReadBuildInfo(); ok {
+		for _, setting := range info.Settings {
+			if setting.Key == "vcs.revision" && setting.Value != "" {
+				commit = setting.Value
+				break
+			} else if setting.Key == "vcs.modified" && setting.Value == "true" {
+				dirty = true
+			}
+		}
+	}
+	if len(commit) > 7 {
+		commit = commit[:7]
+	}
+	if dirty {
+		commit += "-dirty"
+	}
+	return commit
+}
+
 func internalGo(
 	argv []string,
 	stdout io.Writer,
 	stderr io.Writer,
 	opt Runner,
 	options ...FlagrunOptions,
-) (string, int) {
+) (*Flagrun, string, int) {
 	f := &Flagrun{
-		Commit:  "dev",
+		Commit:  buildCommitHash(),
 		Version: "unknown",
 	}
 	for _, option := range options {
@@ -136,18 +166,18 @@ func internalGo(
 			runtime.GOARCH,
 			runtime.Version(),
 			f.Commit)
-		return "", OK
+		return f, "", OK
 	} else if flags.WroteHelp(err) {
 		fmt.Fprintf(stdout, "%v\n", err)
-		return "", OK
+		return f, "", OK
 	} else if err != nil {
 		fmt.Fprintf(stderr, "%v\n", err)
-		return "", UNKNOWN
+		return f, "", UNKNOWN
 	} else if f.ArgsRequired && len(args) == 0 {
 		fmt.Fprintf(stderr, "command is required\n")
 		psr.WriteHelp(stderr)
-		return "", UNKNOWN
+		return f, "", UNKNOWN
 	}
-
-	return opt.Run(args)
+	msg, code := opt.Run(args)
+	return f, msg, code
 }
