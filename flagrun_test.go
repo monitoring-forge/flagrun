@@ -121,3 +121,64 @@ func TestInternalGoWithRequiredParameters(t *testing.T) {
 	assert.Contains(t, stderrStr, "the required flag `-r, --required")
 	assert.Equal(t, UNKNOWN, code)
 }
+
+type versionTrueRunner struct {
+	Version bool `short:"v" long:"version" description:"Show version"`
+}
+
+type versionFalseRunner struct {
+	Version bool `short:"v" long:"version" description:"Show version"`
+}
+
+type noVersionRunner struct{}
+
+type stringVersionRunner struct {
+	Version string `short:"v" long:"version" description:"Show version"`
+}
+
+func (r *versionTrueRunner) Run(_ []string) (string, int)  { return "", OK }
+func (r *versionFalseRunner) Run(_ []string) (string, int) { return "", OK }
+func (r *noVersionRunner) Run(_ []string) (string, int)    { return "", OK }
+func (r *stringVersionRunner) Run(_ []string) (string, int) {
+	return "", OK
+}
+
+func TestHasBooleanVersionField(t *testing.T) {
+	tests := []struct {
+		name string
+		opt  Runner
+		want bool
+	}{
+		{
+			name: "Version field is true",
+			opt:  &versionTrueRunner{Version: true},
+			want: true,
+		},
+		{
+			name: "Version field is false",
+			opt:  &versionFalseRunner{Version: false},
+			want: false,
+		},
+		{
+			name: "no Version field",
+			opt:  &noVersionRunner{},
+			want: false,
+		},
+		{
+			name: "Version field is string",
+			opt:  &stringVersionRunner{Version: "1.0.0"},
+			want: false,
+		},
+		{
+			name: "nil runner",
+			opt:  nil,
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, hasBooleanVersionField(tt.opt))
+		})
+	}
+}

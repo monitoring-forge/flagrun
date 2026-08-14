@@ -6,6 +6,7 @@ import (
 	"os"
 	"reflect"
 	"runtime"
+	"strings"
 
 	"github.com/jessevdk/go-flags"
 )
@@ -67,9 +68,9 @@ func Go(opt Runner, options ...FlagrunOptions) int {
 	msg, code := internalGo(os.Args[1:], os.Stdout, os.Stderr, opt, options...)
 	if msg != "" {
 		if code == OK {
-			_ = println(os.Stdout, msg)
+			_ = printLine(os.Stdout, msg)
 		} else {
-			_ = println(os.Stderr, msg)
+			_ = printLine(os.Stderr, msg)
 		}
 	}
 	return code
@@ -77,8 +78,17 @@ func Go(opt Runner, options ...FlagrunOptions) int {
 
 // hasBooleanVersionField checks if the struct has a Version field of type bool and its value is true
 func hasBooleanVersionField(opt Runner) bool {
+	if opt == nil {
+		return false
+	}
 	t := reflect.TypeOf(opt)
+	if t == nil {
+		return false
+	}
 	if t.Kind() == reflect.Pointer {
+		if t.Elem().Kind() != reflect.Struct {
+			return false
+		}
 		t = t.Elem()
 	}
 	field, ok := t.FieldByName("Version")
@@ -87,6 +97,9 @@ func hasBooleanVersionField(opt Runner) bool {
 	}
 	v := reflect.ValueOf(opt)
 	if v.Kind() == reflect.Pointer {
+		if v.Elem().Kind() != reflect.Struct {
+			return false
+		}
 		v = v.Elem()
 	}
 	return ok && field.Type.Kind() == reflect.Bool && v.FieldByName("Version").Bool()
