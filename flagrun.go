@@ -120,7 +120,6 @@ func buildCommitHash() string {
 		for _, setting := range info.Settings {
 			if setting.Key == "vcs.revision" && setting.Value != "" {
 				commit = setting.Value
-				break
 			} else if setting.Key == "vcs.modified" && setting.Value == "true" {
 				dirty = true
 			}
