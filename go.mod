@@ -1,6 +1,6 @@
 module github.com/monitoring-forge/flagrun
 
-go 1.26.4
+go 1.25.0
 
 require github.com/jessevdk/go-flags v1.6.1
 
