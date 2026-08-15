@@ -2,6 +2,7 @@ package flagrun
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -75,7 +76,7 @@ func TestInternalGo(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			o := &testRunner{}
+			runner := &testRunner{}
 			options := []FlagrunOptions{}
 			if tt.wantArgs {
 				options = append(options, ArgsRequired())
@@ -85,7 +86,8 @@ func TestInternalGo(t *testing.T) {
 			}
 			var stdout bytes.Buffer
 			var stderr bytes.Buffer
-			f, msg, code := internalGo(tt.args, &stdout, &stderr, o, options...)
+			f := buildFlagrun(options...)
+			msg, code := internalGo(f, tt.args, &stdout, &stderr, runner)
 			stdoutStr := stdout.String()
 			stderrStr := stderr.String()
 			require.NotNil(t, f, "%s Flagrun instance should not be nil", tt.name)
@@ -94,7 +96,7 @@ func TestInternalGo(t *testing.T) {
 			assert.Contains(t, stderrStr, tt.wantStderr, "%s stderr", tt.name)
 			assert.Equal(t, code, tt.wantCode, "%s code", tt.name)
 			if tt.wantArgs {
-				assert.Equal(t, tt.wantArgv, o.argv, "%s argv", tt.name)
+				assert.Equal(t, tt.wantArgv, runner.argv, "%s argv", tt.name)
 			}
 		})
 	}
@@ -113,12 +115,13 @@ func TestInternalGoWithRequiredParameters(t *testing.T) {
 	o := &requiredRunner{}
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
-	f, msg, code := internalGo([]string{}, &stdout, &stderr, o)
+	f := buildFlagrun()
+	msg, code := internalGo(f, []string{}, &stdout, &stderr, o)
 	stdoutStr := stdout.String()
 	stderrStr := stderr.String()
 
 	assert.NotNil(t, f, "Flagrun instance should not be nil")
-	assert.Equal(t, "", msg)
+	assert.Equal(t, "", fmt.Sprintf("%v", msg), "msg should be empty")
 	assert.Contains(t, stdoutStr, "")
 	assert.Contains(t, stderrStr, "the required flag `-r, --required")
 	assert.Equal(t, UNKNOWN, code)
@@ -148,7 +151,7 @@ func (r *stringVersionRunner) Run(_ []string) (string, int) {
 func TestHasBooleanVersionField(t *testing.T) {
 	tests := []struct {
 		name string
-		opt  Runner
+		opt  Runner[string]
 		want bool
 	}{
 		{
@@ -181,6 +184,51 @@ func TestHasBooleanVersionField(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t, tt.want, hasBooleanVersionField(tt.opt))
+		})
+	}
+}
+
+type anyMessageRunner struct {
+	Switch bool `short:"s" long:"switch" description:"A boolean switch"`
+}
+
+func (r *anyMessageRunner) Run(_ []string) (any, int) {
+	if r.Switch {
+		return fmt.Errorf("Switch is %v", r.Switch), CRITICAL
+	}
+	return "Switch is OFF", OK
+}
+
+func TestInternalGoWithAnyMessageType(t *testing.T) {
+	tests := []struct {
+		name     string
+		args     []string
+		wantMsg  string
+		wantCode int
+	}{
+		{
+			name:     "Switch is OFF",
+			args:     []string{},
+			wantMsg:  "Switch is OFF",
+			wantCode: OK,
+		},
+		{
+			name:     "Switch is ON",
+			args:     []string{"--switch"},
+			wantMsg:  "Switch is true",
+			wantCode: CRITICAL,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			o := &anyMessageRunner{}
+			var stdout bytes.Buffer
+			var stderr bytes.Buffer
+			f := buildFlagrun()
+			msg, code := internalGo(f, tt.args, &stdout, &stderr, o) // T is inferred
+			assert.Equal(t, tt.wantMsg, msg, "%s msg", tt.name)
+			assert.Equal(t, code, tt.wantCode, "%s code", tt.name)
 		})
 	}
 }
