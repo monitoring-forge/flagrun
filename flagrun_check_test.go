@@ -19,15 +19,6 @@ func (c *testChecker) Run(_ []string) *checkers.Checker {
 	return checkers.NewChecker(c.status, c.msg)
 }
 
-type testShipper struct {
-	Version bool `short:"v" long:"version" description:"Show version"`
-	ran     bool
-}
-
-func (s *testShipper) Run(_ []string) {
-	s.ran = true
-}
-
 func TestInternalChecker(t *testing.T) {
 	tests := []struct {
 		name       string
@@ -82,26 +73,31 @@ func TestInternalChecker(t *testing.T) {
 	}
 }
 
-func TestInternalShipper(t *testing.T) {
+func TestInternalCheckerHelp(t *testing.T) {
 	f := buildFlagrun()
-	o := &testShipper{}
+	o := &testChecker{}
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
-	f.internalShipper([]string{}, &stdout, &stderr, o)
+	msg, code := f.internalChecker([]string{"--help"}, &stdout, &stderr, o)
+	stdoutStr := stdout.String()
 
-	assert.True(t, o.ran)
+	assert.Equal(t, "", msg)
+	assert.Equal(t, OK, code)
+	assert.Contains(t, stdoutStr, "Show version")
+	assert.Contains(t, stdoutStr, "Show this help message")
 }
 
-func TestShip(t *testing.T) {
-	oldArgs := os.Args
-	defer func() { os.Args = oldArgs }()
-	os.Args = []string{"test"}
+func TestInternalCheckerVersion(t *testing.T) {
+	f := buildFlagrun(Version("1.0.0"))
+	o := &testChecker{}
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	msg, code := f.internalChecker([]string{"--version"}, &stdout, &stderr, o)
+	stdoutStr := stdout.String()
 
-	o := &testShipper{}
-	code := Ship(o)
-
+	assert.Equal(t, "", msg)
 	assert.Equal(t, OK, code)
-	assert.True(t, o.ran)
+	assert.Contains(t, stdoutStr, "test-1.0.0")
 }
 
 func TestCheck(t *testing.T) {
