@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.6](https://github.com/monitoring-forge/flagrun/compare/v0.0.5...v0.0.6) - 2026-08-15
+
+- feat: add Checker and Shipper interfaces, update README, and implement tests by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/12
+
 ## [v0.0.5](https://github.com/monitoring-forge/flagrun/compare/v0.0.4...v0.0.5) - 2026-08-14
 
 - feat: add AlwaysStdout option to output messages to stdout regardless  of exit code by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/10
