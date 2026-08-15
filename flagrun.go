@@ -211,7 +211,16 @@ func (f *Flagrun) internalChecker(
 	if chk == nil {
 		return "UNKNOWN: checker returned nil", UNKNOWN
 	}
-	return chk.String(), int(chk.Status)
+	switch chk.Status {
+	case checkers.OK:
+	    return chk.String(), OK
+	case checkers.WARNING:
+	    return chk.String(), WARNING
+	case checkers.CRITICAL:
+	    return chk.String(), CRITICAL
+	default:
+	    return chk.String(), UNKNOWN
+	}
 }
 
 func (f *Flagrun) internalShipper(
