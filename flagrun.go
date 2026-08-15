@@ -219,12 +219,13 @@ func (f *Flagrun) internalShipper(
 	stdout io.Writer,
 	stderr io.Writer,
 	opt Shipper,
-) {
+) int {
 	args, c := f.parseArgs(argv, stdout, stderr, opt)
 	if c != nil {
-		return
+		return *c
 	}
 	opt.Run(args)
+	return OK
 }
 
 func Go[T any](opt Runner[T], options ...FlagrunOptions) int {
@@ -251,6 +252,5 @@ func Check(opt Checker, options ...FlagrunOptions) int {
 
 func Ship(opt Shipper, options ...FlagrunOptions) int {
 	f := buildFlagrun(options...)
-	f.internalShipper(os.Args[1:], os.Stdout, os.Stderr, opt)
-	return OK
+	return f.internalShipper(os.Args[1:], os.Stdout, os.Stderr, opt)
 }
