@@ -208,6 +208,9 @@ func (f *Flagrun) internalChecker(
 	}
 	f.AlwaysStdout = true
 	chk := opt.Run(args)
+	if chk == nil {
+		return "UNKNOWN: checker returned nil", UNKNOWN
+	}
 	return chk.String(), int(chk.Status)
 }
 
