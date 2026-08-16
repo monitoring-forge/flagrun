@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"reflect"
 	"runtime"
 	"runtime/debug"
@@ -211,15 +212,18 @@ func (f *Flagrun) internalChecker(
 	if chk == nil {
 		return "UNKNOWN: checker returned nil", UNKNOWN
 	}
+	if chk.Name == "" {
+		chk.Name = filepath.Base(os.Args[0])
+	}
 	switch chk.Status {
 	case checkers.OK:
-	    return chk.String(), OK
+		return chk.String(), OK
 	case checkers.WARNING:
-	    return chk.String(), WARNING
+		return chk.String(), WARNING
 	case checkers.CRITICAL:
-	    return chk.String(), CRITICAL
+		return chk.String(), CRITICAL
 	default:
-	    return chk.String(), UNKNOWN
+		return chk.String(), UNKNOWN
 	}
 }
 
