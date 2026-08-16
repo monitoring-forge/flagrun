@@ -67,7 +67,7 @@ func TestInternalChecker(t *testing.T) {
 			stdoutStr := stdout.String()
 
 			assert.Equal(t, "", stdoutStr)
-			assert.Equal(t, tt.wantStdout, msg)
+			assert.Equal(t, "flagrun.test"+tt.wantStdout, msg)
 			assert.Equal(t, tt.wantCode, code)
 		})
 	}
