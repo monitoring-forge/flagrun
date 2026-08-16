@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.7](https://github.com/monitoring-forge/flagrun/compare/v0.0.6...v0.0.7) - 2026-08-16
+
+- Feat/check and ship by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/14
+
 ## [v0.0.6](https://github.com/monitoring-forge/flagrun/compare/v0.0.5...v0.0.6) - 2026-08-15
 
 - feat: add Checker and Shipper interfaces, update README, and implement tests by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/12
