@@ -199,7 +199,20 @@ func (r *anyMessageRunner) Run(_ []string) (any, int) {
 	return "Switch is OFF", OK
 }
 
-func TestInternalGoWithAnyMessageType(t *testing.T) {
+type errorMessageRunner struct {
+	Switch bool `short:"s" long:"switch" description:"A boolean switch"`
+}
+
+//nolint:staticcheck // intentional: Runner[error] requires the (error, int) signature.
+func (r *errorMessageRunner) Run(_ []string) (error, int) {
+	if r.Switch {
+		return fmt.Errorf("Switch is %v", r.Switch), CRITICAL
+	}
+	return nil, OK
+}
+
+func runInternalGoMessageTypeTests[T any](t *testing.T, runner Runner[T], wantMsgOff string) {
+	t.Helper()
 	tests := []struct {
 		name     string
 		args     []string
@@ -209,7 +222,7 @@ func TestInternalGoWithAnyMessageType(t *testing.T) {
 		{
 			name:     "Switch is OFF",
 			args:     []string{},
-			wantMsg:  "Switch is OFF",
+			wantMsg:  wantMsgOff,
 			wantCode: OK,
 		},
 		{
@@ -222,13 +235,20 @@ func TestInternalGoWithAnyMessageType(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			o := &anyMessageRunner{}
 			var stdout bytes.Buffer
 			var stderr bytes.Buffer
 			f := buildFlagrun()
-			msg, code := internalGo(f, tt.args, &stdout, &stderr, o) // T is inferred
+			msg, code := internalGo(f, tt.args, &stdout, &stderr, runner)
 			assert.Equal(t, tt.wantMsg, msg, "%s msg", tt.name)
 			assert.Equal(t, code, tt.wantCode, "%s code", tt.name)
 		})
 	}
+}
+
+func TestInternalGoWithAnyMessageType(t *testing.T) {
+	runInternalGoMessageTypeTests(t, &anyMessageRunner{}, "Switch is OFF")
+}
+
+func TestInternalGoWithErrorMessageType(t *testing.T) {
+	runInternalGoMessageTypeTests(t, &errorMessageRunner{}, "")
 }

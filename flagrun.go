@@ -193,6 +193,18 @@ func internalGo[T any](
 		return "", *c
 	}
 	msg, code := opt.Run(args)
+	// If the message is nil, return an empty string and the code
+	valueOfMsg := reflect.ValueOf(msg)
+	if !valueOfMsg.IsValid() {
+		return "", code
+	}
+
+	switch valueOfMsg.Kind() {
+	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice:
+		if valueOfMsg.IsNil() {
+			return "", code
+		}
+	}
 	return fmt.Sprintf("%v", msg), code
 }
 
