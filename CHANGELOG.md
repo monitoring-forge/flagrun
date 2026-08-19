@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.8](https://github.com/monitoring-forge/flagrun/compare/v0.0.7...v0.0.8) - 2026-08-19
+
+- fix: handle nil message return in internalGo function and add tests f… by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/16
+
 ## [v0.0.7](https://github.com/monitoring-forge/flagrun/compare/v0.0.6...v0.0.7) - 2026-08-16
 
 - Feat/check and ship by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/14
