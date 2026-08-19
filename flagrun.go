@@ -193,6 +193,11 @@ func internalGo[T any](
 		return "", *c
 	}
 	msg, code := opt.Run(args)
+	// If the message is nil, return an empty string and the code
+	typeOfMsg := reflect.TypeOf(msg)
+	if typeOfMsg == nil || (typeOfMsg.Kind() == reflect.Pointer && reflect.ValueOf(msg).IsNil()) {
+		return "", code
+	}
 	return fmt.Sprintf("%v", msg), code
 }
 
