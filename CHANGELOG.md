@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.0.9](https://github.com/monitoring-forge/flagrun/compare/v0.0.8...v0.0.9) - 2026-09-01
+
+- Sync files with `monitoring-forge/github-common` by @monitoring-forge-files-sync-action[bot] in https://github.com/monitoring-forge/flagrun/pull/20
+- go: bump github.com/stretchr/testify from 1.11.1 to 1.12.0 in the dependencies group by @dependabot[bot] in https://github.com/monitoring-forge/flagrun/pull/18
+- go: bump github.com/stretchr/testify from 1.12.0 to 1.12.1 in the dependencies group by @dependabot[bot] in https://github.com/monitoring-forge/flagrun/pull/22
+- Sync files with `monitoring-forge/github-common` by @monitoring-forge-files-sync-action[bot] in https://github.com/monitoring-forge/flagrun/pull/23
+- ci: bump Songmu/tagpr from 1.20.1 to 1.20.2 in the dependencies group by @dependabot[bot] in https://github.com/monitoring-forge/flagrun/pull/24
+
 ## [v0.0.8](https://github.com/monitoring-forge/flagrun/compare/v0.0.7...v0.0.8) - 2026-08-19
 
 - fix: handle nil message return in internalGo function and add tests f… by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/16
