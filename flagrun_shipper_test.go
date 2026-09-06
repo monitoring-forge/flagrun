@@ -2,6 +2,7 @@ package flagrun
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"testing"
 
@@ -10,11 +11,19 @@ import (
 
 type testShipper struct {
 	Version bool `short:"v" long:"version" description:"Show version"`
+	Valid   bool `short:"V" long:"valid" description:"Valid parameter"`
 	ran     bool
 }
 
 func (s *testShipper) Run(_ []string) {
 	s.ran = true
+}
+
+func (s *testShipper) Validator(_ []string) error {
+	if !s.Valid {
+		return fmt.Errorf("Valid parameter is not set")
+	}
+	return nil
 }
 
 func TestInternalShipper(t *testing.T) {
@@ -62,4 +71,15 @@ func TestShip(t *testing.T) {
 
 	assert.Equal(t, OK, code)
 	assert.True(t, o.ran)
+}
+
+func TestInternalShipperValidator(t *testing.T) {
+	o := &testShipper{}
+	f := buildFlagrun(Validator(o.Validator))
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	code := f.internalShipper([]string{}, &stdout, &stderr, o)
+
+	assert.Equal(t, UNKNOWN, code)
+	assert.Contains(t, stderr.String(), "Valid parameter is not set")
 }
