@@ -121,6 +121,48 @@ func main() {
 }
 ```
 
+### `flagrun.Validator` — 引数の追加検証
+
+`flagrun.Validator` を使うと、コマンドライン引数のパース後に追加の検証を行えます。検証関数は `func([]string) error` のシグネチャを持ち、エラーを返した場合は標準エラー出力にメッセージを出力して `UNKNOWN` で終了します。
+
+```go
+package main
+
+import (
+    "fmt"
+
+    "github.com/monitoring-forge/flagrun"
+)
+
+type Opt struct {
+    Host string `short:"H" long:"host" default:"localhost" description:"Target host"`
+    Port int    `short:"p" long:"port" default:"8080" description:"Target port"`
+    Version bool `short:"v" long:"version" description:"Show version"`
+}
+
+func (p *Opt) Run(args []string) (string, int) {
+    return "ok\t1", flagrun.OK
+}
+
+func (p *Opt) Validator(args []string) error {
+    if p.Port < 1 || p.Port > 65535 {
+        return fmt.Errorf("port must be between 1 and 65535: %d", p.Port)
+    }
+    return nil
+}
+
+func main() {
+    opt := &Opt{}
+    os.Exit(flagrun.Go(
+        opt,
+        flagrun.Version(version),
+        flagrun.Validator(opt.Validator),
+    ))
+}
+```
+
+検証は `go-flags` によるパース成功後、`Run` メソッドの呼び出し前に実行されます。`flagrun.Go` / `flagrun.Check` / `flagrun.Ship` のいずれでも利用できます。
+
 ## オプション
 
 | `flagrun.Go` / `flagrun.Check` / `flagrun.Ship` では、以下の関数を使って動作をカスタマイズできます。
@@ -131,6 +173,7 @@ func main() {
 | `flagrun.Commit(commit string)` | コミットハッシュなどを指定します（デフォルト: `dev`）。 |
 | `flagrun.ArgsRequired()` | コマンドライン引数を必須にします。引数がない場合は UNKNOWN で終了します。 |
 | `flagrun.AlwaysStdout()` | `Run` の戻り値を、終了コードに関係なく標準出力へ出力します。`flagrun.Check` では常に標準出力へ出力されるため、このオプションは不要です。 |
+| `flagrun.Validator(validator func([]string) error)` | パース後の追加検証を行う関数を指定します。エラー時は UNKNOWN で終了します。 |
 
 ## 終了コード
 

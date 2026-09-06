@@ -41,6 +41,7 @@ type Flagrun struct {
 	Version      string
 	Commit       string
 	AlwaysStdout bool
+	Validator    func([]string) error
 }
 
 type FlagrunOptions func(*Flagrun)
@@ -70,6 +71,12 @@ func ArgsRequired() FlagrunOptions {
 func AlwaysStdout() FlagrunOptions {
 	return func(f *Flagrun) {
 		f.AlwaysStdout = true
+	}
+}
+
+func Validator(validator func([]string) error) FlagrunOptions {
+	return func(f *Flagrun) {
+		f.Validator = validator
 	}
 }
 
@@ -178,6 +185,14 @@ func (f *Flagrun) parseArgs(argv []string, stdout, stderr io.Writer, opt any) ([
 		psr.WriteHelp(stderr)
 		return nil, nullint(UNKNOWN)
 	}
+
+	if f.Validator != nil {
+		if err := f.Validator(args); err != nil {
+			fmt.Fprintf(stderr, "%v\n", err)
+			return nil, nullint(UNKNOWN)
+		}
+	}
+
 	return args, nil
 }
 
