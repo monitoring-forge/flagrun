@@ -171,6 +171,7 @@ func main() {
 |------|------|
 | `flagrun.Version(version string)` | バージョン表示に使用する文字列を指定します。 |
 | `flagrun.Commit(commit string)` | コミットハッシュなどを指定します（デフォルト: `dev`）。 |
+| `flagrun.Usage(usage string)` | ヘルプ表示で使う Usage 文字列を指定します。デフォルトは空で`ArgsRequired` を指定した場合は `[OPTIONS] -- command [args...]` が使われます。 |
 | `flagrun.ArgsRequired()` | コマンドライン引数を必須にします。引数がない場合は UNKNOWN で終了します。 |
 | `flagrun.AlwaysStdout()` | `Run` の戻り値を、終了コードに関係なく標準出力へ出力します。`flagrun.Check` では常に標準出力へ出力されるため、このオプションは不要です。 |
 | `flagrun.Validator(validator func([]string) error)` | パース後の追加検証を行う関数を指定します。エラー時は UNKNOWN で終了します。 |

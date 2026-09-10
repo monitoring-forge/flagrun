@@ -127,6 +127,22 @@ func TestInternalGoWithRequiredParameters(t *testing.T) {
 	assert.Equal(t, UNKNOWN, code)
 }
 
+func TestInternalGoWithUsageOption(t *testing.T) {
+	o := &testRunner{}
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	f := buildFlagrun(Usage("Custom usage message"))
+	msg, code := internalGo(f, []string{"--help"}, &stdout, &stderr, o)
+	stdoutStr := stdout.String()
+	stderrStr := stderr.String()
+
+	assert.NotNil(t, f, "Flagrun instance should not be nil")
+	assert.Equal(t, "", fmt.Sprintf("%v", msg), "msg should be empty")
+	assert.Contains(t, stdoutStr, "Custom usage message")
+	assert.Contains(t, stderrStr, "")
+	assert.Equal(t, OK, code)
+}
+
 type versionTrueRunner struct {
 	Version bool `short:"v" long:"version" description:"Show version"`
 }
