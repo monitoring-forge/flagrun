@@ -40,6 +40,7 @@ type Flagrun struct {
 	ArgsRequired bool
 	Version      string
 	Commit       string
+	Usage        string
 	AlwaysStdout bool
 	Validator    func([]string) error
 }
@@ -59,6 +60,12 @@ func Commit(commit string) FlagrunOptions {
 		if commit != "" {
 			f.Commit = commit
 		}
+	}
+}
+
+func Usage(usage string) FlagrunOptions {
+	return func(f *Flagrun) {
+		f.Usage = usage
 	}
 }
 
@@ -158,7 +165,10 @@ func nullint(i int) *int {
 
 func (f *Flagrun) parseArgs(argv []string, stdout, stderr io.Writer, opt any) ([]string, *int) {
 	psr := flags.NewParser(opt, flags.HelpFlag|flags.PassDoubleDash)
-	if f.ArgsRequired {
+	if f.Usage != "" {
+		psr.Usage = f.Usage
+	}
+	if f.ArgsRequired && f.Usage == "" {
 		psr.Usage = "[OPTIONS] -- command [args...]"
 	}
 	args, err := psr.ParseArgs(argv)
