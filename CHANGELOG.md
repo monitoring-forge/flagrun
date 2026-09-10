@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.0.10](https://github.com/monitoring-forge/flagrun/compare/v0.0.9...v0.0.10) - 2026-09-10
+
+- go: bump golang.org/x/sys from 0.47.0 to 0.48.0 in the dependencies group by @dependabot[bot] in https://github.com/monitoring-forge/flagrun/pull/26
+- ci: bump Songmu/tagpr from 1.20.2 to 1.20.3 in the dependencies group by @dependabot[bot] in https://github.com/monitoring-forge/flagrun/pull/27
+- feat: add Usage option for custom help message in Flagrun by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/28
+
 ## [v0.0.9](https://github.com/monitoring-forge/flagrun/compare/v0.0.8...v0.0.9) - 2026-09-06
 
 - Sync files with `monitoring-forge/github-common` by @monitoring-forge-files-sync-action[bot] in https://github.com/monitoring-forge/flagrun/pull/20
