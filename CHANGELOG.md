@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.0.11](https://github.com/monitoring-forge/flagrun/compare/v0.0.10...v0.0.11) - 2026-10-26
+
+- ci: bump Songmu/tagpr from 1.20.3 to 1.21.0 in the dependencies group by @dependabot[bot] in https://github.com/monitoring-forge/flagrun/pull/31
+- Sync files with `monitoring-forge/github-common` by @monitoring-forge-files-sync-action[bot] in https://github.com/monitoring-forge/flagrun/pull/30
+- Sync files with `monitoring-forge/github-common` by @monitoring-forge-files-sync-action[bot] in https://github.com/monitoring-forge/flagrun/pull/33
+- Sync files with `monitoring-forge/github-common` by @monitoring-forge-files-sync-action[bot] in https://github.com/monitoring-forge/flagrun/pull/35
+- ci: bump Songmu/tagpr from 1.21.0 to 1.21.2 in the tagpr group by @dependabot[bot] in https://github.com/monitoring-forge/flagrun/pull/36
+- go: bump golang.org/x/sys from 0.48.0 to 0.49.0 in the dependencies group by @dependabot[bot] in https://github.com/monitoring-forge/flagrun/pull/37
+- ci: bump actions/create-github-app-token from 3.2.0 to 3.3.0 in the dependencies group by @dependabot[bot] in https://github.com/monitoring-forge/flagrun/pull/38
+- feat: add custom flag types for human-readable bytes and regex support by @kazeburo in https://github.com/monitoring-forge/flagrun/pull/39
+
 ## [v0.0.10](https://github.com/monitoring-forge/flagrun/compare/v0.0.9...v0.0.10) - 2026-09-10
 
 - go: bump golang.org/x/sys from 0.47.0 to 0.48.0 in the dependencies group by @dependabot[bot] in https://github.com/monitoring-forge/flagrun/pull/26
