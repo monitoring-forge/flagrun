@@ -9,6 +9,7 @@ require (
 )
 
 require (
+	github.com/dustin/go-humanize v1.1.0
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 )

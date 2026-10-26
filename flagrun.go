@@ -159,10 +159,6 @@ func buildFlagrun(options ...FlagrunOptions) *Flagrun {
 	return f
 }
 
-func nullint(i int) *int {
-	return &i
-}
-
 func (f *Flagrun) parseArgs(argv []string, stdout, stderr io.Writer, opt any) ([]string, *int) {
 	psr := flags.NewParser(opt, flags.HelpFlag|flags.PassDoubleDash)
 	if f.Usage != "" {
@@ -183,23 +179,23 @@ func (f *Flagrun) parseArgs(argv []string, stdout, stderr io.Writer, opt any) ([
 			runtime.GOARCH,
 			runtime.Version(),
 			f.Commit)
-		return nil, nullint(OK)
+		return nil, new(OK)
 	} else if flags.WroteHelp(err) {
 		fmt.Fprintf(stdout, "%v\n", err)
-		return nil, nullint(OK)
+		return nil, new(OK)
 	} else if err != nil {
 		fmt.Fprintf(stderr, "%v\n", err)
-		return nil, nullint(UNKNOWN)
+		return nil, new(UNKNOWN)
 	} else if f.ArgsRequired && len(args) == 0 {
 		fmt.Fprintf(stderr, "command is required\n")
 		psr.WriteHelp(stderr)
-		return nil, nullint(UNKNOWN)
+		return nil, new(UNKNOWN)
 	}
 
 	if f.Validator != nil {
 		if err := f.Validator(args); err != nil {
 			fmt.Fprintf(stderr, "%v\n", err)
-			return nil, nullint(UNKNOWN)
+			return nil, new(UNKNOWN)
 		}
 	}
 
