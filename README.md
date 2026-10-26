@@ -163,6 +163,58 @@ func main() {
 
 検証は `go-flags` によるパース成功後、`Run` メソッドの呼び出し前に実行されます。`flagrun.Go` / `flagrun.Check` / `flagrun.Ship` のいずれでも利用できます。
 
+## カスタムフラグ型
+
+### `flagrun.Bytes` — 人間可読なバイト数
+
+`flagrun.Bytes` は `go-flags` 向けのカスタム型で、`10MB` や `2GiB` のような人間可読な文字列を数値に変換します。内部では [go-humanize](https://github.com/dustin/go-humanize) の `ParseBytes` を利用しています。
+
+```go
+package main
+
+import (
+    "fmt"
+
+    "github.com/monitoring-forge/flagrun"
+)
+
+type Opt struct {
+    MaxSize flagrun.Bytes `short:"s" long:"max-size" default:"1MB" description:"Maximum size"`
+}
+
+func (p *Opt) Run(args []string) (string, int) {
+    fmt.Printf("max size: %d bytes\n", p.MaxSize)
+    return "ok\t1", flagrun.OK
+}
+```
+
+### `flagrun.Re` — 正規表現フラグ
+
+`flagrun.Re` は `go-flags` 向けのカスタム型で、フラグ値を `regexp.Regexp` としてパースします。未指定時や空文字の場合は `Present()` が `false` を返し、正規表現のコンパイルに失敗した場合はエラーを返します。
+
+```go
+package main
+
+import (
+    "fmt"
+
+    "github.com/monitoring-forge/flagrun"
+)
+
+type Opt struct {
+    Pattern flagrun.Re `short:"p" long:"pattern" description:"Filter pattern"`
+}
+
+func (p *Opt) Run(args []string) (string, int) {
+    if p.Pattern.Present() {
+        fmt.Printf("pattern: %s\n", p.Pattern.String())
+        matched := p.Pattern.Regexp().MatchString("example")
+        fmt.Printf("matched: %v\n", matched)
+    }
+    return "ok\t1", flagrun.OK
+}
+```
+
 ## オプション
 
 | `flagrun.Go` / `flagrun.Check` / `flagrun.Ship` では、以下の関数を使って動作をカスタマイズできます。

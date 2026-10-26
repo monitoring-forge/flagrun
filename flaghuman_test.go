@@ -1,0 +1,20 @@
+package flagrun
+
+import "testing"
+
+func TestHumanBytesUnmarshalFlag(t *testing.T) {
+	var hb Bytes
+	if err := hb.UnmarshalFlag("10MB"); err != nil {
+		t.Fatalf("UnmarshalFlag error: %v", err)
+	}
+	if hb != 10*1000*1000 {
+		t.Errorf("Bytes = %d; want 10000000", hb)
+	}
+}
+
+func TestHumanBytesUnmarshalFlagInvalid(t *testing.T) {
+	var hb Bytes
+	if err := hb.UnmarshalFlag("invalid"); err == nil {
+		t.Error("UnmarshalFlag should return error for invalid input")
+	}
+}
